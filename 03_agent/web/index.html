@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="PyAgent 本地文档知识工作台：有来源的问答、原文检索与证据核查。">
+  <title>PyAgent · 本地知识工作台</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="工作台侧栏">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">P<span></span></div><div><strong>PyAgent</strong><small>本地知识工作台</small></div></div>
+      <button class="new-chat" id="new-chat" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>新建对话</button>
+      <nav class="side-nav" aria-label="功能">
+        <p class="side-label">工作空间</p>
+        <button class="side-link active" type="button" data-set-mode="ask" data-view="chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.5 9.5 0 0 1-4-.9L3 21l1.7-4.5A8.4 8.4 0 1 1 21 11.5Z"/></svg><span>知识问答</span><span class="nav-dot"></span></button>
+        <button class="side-link" type="button" data-set-mode="search" data-view="chat"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><span>原文检索</span><span class="nav-dot"></span></button>
+        <button class="side-link" type="button" data-view="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5M9 8h6M9 12h7"/></svg><span>资料管理</span><span class="nav-dot"></span></button>
+      </nav>
+      <section class="index-card" aria-labelledby="index-heading">
+        <div class="card-heading"><h2 id="index-heading">本地知识库</h2><span class="tiny-badge">SQLite</span></div>
+        <div class="stat-grid">
+          <div><strong id="stat-files">—</strong><span>来源文件</span></div><div><strong id="stat-chunks">—</strong><span>知识片段</span></div>
+          <div><strong id="stat-vectors">—</strong><span>本地向量</span></div><div><strong id="stat-pending">—</strong><span>待处理</span></div>
+        </div>
+        <p class="index-state" id="index-state"><span class="status-dot"></span>正在读取索引</p>
+      </section>
+      <div class="model-info"><p class="side-label">当前模型</p><div class="model-row"><span>生成</span><strong id="model-name">读取中…</strong></div><div class="model-row"><span>向量</span><strong id="embed-name">读取中…</strong></div></div>
+      <div class="privacy-card"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-3.8 8-10V5l-8-3-8 3v7c0 6.2 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg><div><strong id="privacy-title">资料留在本机</strong><p id="privacy-copy">页面仅连接本机服务，无广告、无追踪、无云端依赖。</p></div></div>
+      <footer class="sidebar-footer"><span>PYAGENT LOCAL</span><span>v1.0</span></footer>
+    </aside>
+    <button class="sidebar-scrim" id="sidebar-scrim" aria-label="关闭侧栏" type="button"></button>
+    <section class="workspace">
+      <header class="topbar">
+        <div class="topbar-title"><button class="icon-button mobile-menu" id="mobile-menu" type="button" aria-label="打开侧栏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div><h1 id="page-title">知识问答</h1><p id="page-subtitle">从本地资料中寻找答案，让结论有据可查</p></div></div>
+        <div class="topbar-actions"><button class="connection-pill" id="connection-pill" type="button" title="点击刷新本地服务状态"><span class="status-dot pulse"></span><span id="connection-text">正在连接本地服务</span></button><button class="icon-button" id="theme-toggle" type="button" aria-label="切换深浅色主题" title="切换深浅色主题"><svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg></button></div>
+      </header>
+      <div class="content-grid" id="chat-view">
+        <main class="chat-panel">
+          <div class="messages" id="messages" aria-live="polite">
+            <section class="welcome" id="welcome">
+              <div class="welcome-symbol" aria-hidden="true"><span>P</span><i></i><b></b></div>
+              <p class="eyebrow">LOCAL KNOWLEDGE · CLEAR ANSWERS</p>
+              <h2>问题有答案，<br><span>答案有出处。</span></h2>
+              <p class="welcome-copy">我会从你已经整理的书籍、知识卡片和代码示例中检索证据，再给出带有引用编号的回答。资料不足时，我会明确告诉你。</p>
+              <div class="welcome-stats"><span><i></i><b id="welcome-sources">本地索引</b></span><span>每轮独立检索</span><span>问答不修改资料</span></div>
+              <div class="sample-grid">
+                <button class="sample-card" type="button" data-question="Python 中变量赋值如何绑定名称？"><span class="sample-number">01</span><strong>理解一个概念</strong><p>Python 中变量赋值如何绑定名称？</p><span class="sample-arrow">↗</span></button>
+                <button class="sample-card" type="button" data-question="函数内赋值为什么不会自动修改全局变量？"><span class="sample-number">02</span><strong>追问适用条件</strong><p>函数内赋值为什么不会自动修改全局变量？</p><span class="sample-arrow">↗</span></button>
+                <button class="sample-card" type="button" data-question="遇到 NameError 时应该如何排查？"><span class="sample-number">03</span><strong>查找排查方法</strong><p>遇到 NameError 时应该如何排查？</p><span class="sample-arrow">↗</span></button>
+              </div>
+            </section>
+          </div>
+          <div class="composer-area">
+            <form class="composer" id="question-form">
+              <div class="composer-modes" role="group" aria-label="查询模式">
+                <button class="mode-button active" type="button" data-set-mode="ask"><span class="mode-spark">✦</span>智能回答</button>
+                <button class="mode-button" type="button" data-set-mode="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>原文检索</button>
+              </div>
+              <label class="sr-only" for="question-input">输入问题</label>
+              <textarea id="question-input" rows="1" maxlength="4000" placeholder="问一个与本地资料有关的问题…" required></textarea>
+              <div class="composer-bottom">
+                <div class="query-options">
+                  <label class="keyword-option" title="不调用向量模型，只使用 BM25 与中文词片检索"><input id="lexical-only" type="checkbox"><span>仅关键词</span></label>
+                  <label class="topk-option">证据 <select id="top-k" aria-label="返回证据数量"><option value="2">2 条</option><option value="4" selected>4 条</option><option value="6">6 条</option><option value="8">8 条</option></select></label>
+                </div>
+                <div class="send-area"><span class="keyboard-hint">Enter 发送 · Shift + Enter 换行</span><button class="send-button" id="send-button" type="submit" aria-label="发送问题"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Z"/><path d="m12 13 7-8"/></svg></button></div>
+              </div>
+            </form>
+            <p class="composer-note"><span id="char-count">0 / 4000</span><span>回答只依据已索引资料，引用可回到真实文件核查。</span></p>
+          </div>
+        </main>
+        <aside class="sources-panel" id="sources-panel" aria-label="来源证据">
+          <header class="sources-header"><div><h2>来源证据</h2><p id="evidence-caption">回答引用的原文会显示在这里</p></div><span class="source-count" id="source-count">0</span><button class="icon-button sources-close" id="sources-close" type="button" aria-label="关闭来源面板">×</button></header>
+          <div class="sources-list" id="sources-list">
+            <div class="sources-empty" id="sources-empty"><div class="empty-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 7h21l7 7v27H10z"/><path d="M31 7v8h7M17 23h14M17 29h14M17 35h9"/></svg></div><h3>等待一次提问</h3><p>真实文件、章节定位和原文摘录会按 [S1]、[S2] 编号排列。</p><span>不编造来源，不把弱相关候选当作依据</span></div>
+          </div>
+          <footer class="sources-footer"><span class="legend-dot"></span><span id="evidence-kind">正式来源 · 可在项目文件中核查</span></footer>
+        </aside>
+      </div>
+      <main class="library-view" id="library-view" hidden>
+        <div class="library-container">
+          <section class="library-hero" aria-labelledby="library-heading">
+            <div class="library-hero-copy">
+              <p class="eyebrow">YOUR LIBRARY · ALWAYS LOCAL</p>
+              <h2 id="library-heading">让新资料，<span>自然长成知识。</span></h2>
+              <p>拖入文档，剩下的交给 PyAgent。转换、整理和增量索引都在这台电脑上完成。</p>
+            </div>
+            <div class="library-hero-stats" aria-label="资料统计">
+              <div><strong id="library-total">—</strong><span>全部来源</span></div>
+              <div><strong id="library-imported">—</strong><span>页面导入</span></div>
+              <div><strong id="library-chunks">—</strong><span>知识片段</span></div>
+            </div>
+          </section>
+
+          <section class="import-card" aria-labelledby="import-heading">
+            <header class="library-section-header">
+              <div><p class="section-kicker">ADD KNOWLEDGE</p><h3 id="import-heading">添加新资料</h3><p>支持多文件导入，完成后会自动更新索引。</p></div>
+              <button class="library-button secondary" id="refresh-index" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6 6.5L4 9M5.5 15A7 7 0 0 0 18 17.5l2-2.5"/></svg>更新索引</button>
+            </header>
+            <div class="drop-zone" id="drop-zone">
+              <input id="file-input" type="file" accept=".txt,.md,.markdown,.docx" multiple hidden>
+              <div class="drop-illustration" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M12 5h17l8 8v30H12z"/><path d="M29 5v9h8M24 33V19m-6 6 6-6 6 6"/></svg><span>TXT</span><span>DOCX</span></div>
+              <div class="drop-copy"><h4>把资料拖到这里</h4><p>或从电脑中选择想加入知识库的文档</p><button class="library-button primary" id="choose-files" type="button">选择文件<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 14-7-4 14-3-6-7-1Z"/></svg></button></div>
+              <div class="drop-rules"><span>TXT / Markdown / DOCX</span><span>单个文件 ≤ 25 MiB</span><span>转换后文字 ≤ 2 MiB</span><small>DOCX 提取标题、正文、列表和表格；图片、扫描件及加密文件不会 OCR。</small></div>
+            </div>
+            <div class="upload-list" id="upload-list" aria-live="polite" hidden></div>
+            <div class="index-job" id="index-job" role="status" aria-live="polite" hidden>
+              <div class="index-job-heading"><span class="job-icon" id="job-icon">↻</span><div><strong id="index-job-title">正在准备索引</strong><p id="index-job-detail">请不要关闭启动 PyAgent 的命令窗口</p></div><span class="job-percent" id="job-percent"></span></div>
+              <div class="progress-track"><span id="index-progress-bar"></span></div>
+              <p class="index-job-path" id="index-job-path"></p>
+            </div>
+          </section>
+
+          <section class="document-browser" aria-labelledby="document-heading">
+            <header class="library-section-header document-header">
+              <div><p class="section-kicker">LOCAL COLLECTION</p><h3 id="document-heading">我的资料库 <span id="document-count">0</span></h3><p>所有已索引来源都可以打开原文；页面导入的来源会优先显示。</p></div>
+              <button class="icon-button library-refresh" id="refresh-documents" type="button" aria-label="刷新资料列表" title="刷新资料列表"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6 6.5L4 9M5.5 15A7 7 0 0 0 18 17.5l2-2.5"/></svg></button>
+            </header>
+            <div class="document-toolbar">
+              <label class="document-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><span class="sr-only">搜索资料</span><input id="library-search" type="search" placeholder="搜索标题或文件路径…" autocomplete="off"></label>
+              <label class="document-scope"><span>显示</span><select id="library-scope" aria-label="筛选资料范围"><option value="all">全部资料</option><option value="import">页面导入</option><option value="library">原有资料</option></select></label>
+            </div>
+            <div class="document-columns" aria-hidden="true"><span>资料名称</span><span>类型</span><span>片段</span><span>大小</span><span>操作</span></div>
+            <div class="document-list" id="document-list"><div class="documents-loading"><span class="loading-dots">● ● ●</span><p>正在读取本地资料…</p></div></div>
+            <div class="documents-empty" id="documents-empty" hidden><div>⌁</div><h4>没有找到匹配的资料</h4><p>换一个关键词，或拖入一份新文档。</p></div>
+            <footer class="document-footer"><span id="document-range">0 个来源</span><div class="pagination"><button id="documents-prev" type="button" aria-label="上一页">←</button><span id="documents-page">1 / 1</span><button id="documents-next" type="button" aria-label="下一页">→</button></div></footer>
+          </section>
+          <p class="library-footnote"><span class="status-dot"></span>资料只保存在本机。只有“页面导入”的文件可从网页移除，移除时会保留本地备份，不会改动原有书籍与知识卡片。</p>
+        </div>
+      </main>
+    </section>
+  </div>
+  <div class="reader-overlay" id="reader-overlay" hidden>
+    <section class="reader-dialog" role="dialog" aria-modal="true" aria-labelledby="reader-title" aria-describedby="reader-location">
+      <header class="reader-header">
+        <div class="reader-heading"><span class="reader-eyebrow">原始资料 · 只读</span><h2 id="reader-title">正在打开原文</h2><p id="reader-path"></p></div>
+        <button class="icon-button reader-close" id="reader-close" type="button" aria-label="关闭原文阅读器" title="关闭（Esc）">×</button>
+      </header>
+      <div class="reader-context"><span class="reader-context-icon">⌖</span><div><strong id="reader-location">正在读取引用位置…</strong><p id="reader-match">原文不会离开本机，也不会被修改</p></div></div>
+      <div class="reader-warning" id="reader-warning" role="status" hidden></div>
+      <div class="reader-loading" id="reader-loading"><span class="loading-dots">● ● ●</span><p>正在从本地知识库读取原文…</p></div>
+      <div class="reader-content" id="reader-content" tabindex="0" aria-label="原文全文"></div>
+      <footer class="reader-footer"><span id="reader-stats">只读模式</span><div><button class="reader-button" id="reader-copy-path" type="button">复制路径</button><button class="reader-button primary" id="reader-target" type="button" disabled>回到引用段落</button></div></footer>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+  <script src="/library.js" defer></script>
+</body>
+</html>
+

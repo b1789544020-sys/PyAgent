@@ -1,0 +1,6 @@
+项目目录,涉及规则 id,预期可自动修复数,预期需人工数
+case_01_syntax_colon,DR_0001,1,0
+case_02_indent_name,DR_0003;DR_0005,0,2
+case_03_import_path,DR_0008,0,1
+case_04_mutable_default,DR_0010;DR_0024,0,2
+case_05_type_error,DR_0016,0,1
