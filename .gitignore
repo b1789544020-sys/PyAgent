@@ -1,0 +1,17 @@
+# Local review and media-production files stay outside this whitelist repository.
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+*.webm
+*.wav
+*.mp3
+*.sqlite3
+.env
+.env.*
+__pycache__/
+.pytest_cache/
+review/
+recordings/
+private/
