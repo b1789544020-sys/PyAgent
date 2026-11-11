@@ -6,8 +6,8 @@
 
 ## 观看演示
 
-- [完整演示视频（MP4，中文配音与字幕）](https://github.com/b1789544020-sys/PyAgent-Showcase/releases/latest/download/pyagent-demo.mp4)
-- [字幕文件（SRT）](https://github.com/b1789544020-sys/PyAgent-Showcase/releases/latest/download/pyagent-demo.srt)
+- [完整演示视频（MP4，中文配音与字幕）](assets/pyagent-demo.mp4)
+- [字幕文件（SRT）](assets/pyagent-demo.srt)
 - [架构与模型分工](docs/ARCHITECTURE.md) · [验证结果与边界](docs/VALIDATION.md)
 
 ![PyAgent 本地知识工作台](assets/overview.png)
@@ -66,4 +66,4 @@ GIF 预览：
 
 ![PyAgent 功能预览](assets/pyagent-demo-preview.gif)
 
-完整视频通过 GitHub Release 提供，避免在源码历史中反复保存大型媒体文件。
+完整 MP4、SRT 与 GIF 预览均已收入本仓库，可直接打开或下载。
