@@ -6,7 +6,7 @@
 
 私有书籍语料、知识卡片 JSONL、SQLite 索引、模型文件、真实 `.env`、日志、浏览器会话、移除备份、内部 PROJECT/STATE 文档和旧打包产物均未复制。需要在本机另行恢复这些数据后才能重建原有私人知识库；仓库内的 `02_assets/micro_tests/` 只用于自动化测试。
 
-公开截图、视频和展示说明位于单独的 PyAgent-Showcase 项目；本私有仓库不得直接转为公开。
+公开截图、视频和展示说明位于单独的 [PyAgent-Showcase](https://github.com/b1789544020-sys/PyAgent-Showcase) 项目，其中 [2 分 01 秒中文演示](https://github.com/b1789544020-sys/PyAgent-Showcase/blob/main/assets/pyagent-demo.mp4) 可直接打开或下载；本私有仓库不得直接转为公开。
 
 ## 主要入口
 
