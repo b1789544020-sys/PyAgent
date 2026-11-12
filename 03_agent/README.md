@@ -78,7 +78,7 @@ python 03_agent/main.py ask "run_project 04_golden_tests/smoke_01 main.py"
 
 ## 3. 配置方法
 
-配置只在运行时读取。项目根目录的 `.env` 与进程环境变量均可使用，**环境变量优先**。可复制 `.env.example` 为 `.env` 后填写；不要把真实 `.env` 或 API Key 写入日志、测试和交付文件。获取真实 Key、逐项填写、环境变量切换及 Ollama 安装的完整步骤见 [SETUP.md](SETUP.md)。OpenAI 兼容接口仍需用户提供 Key 后验证；本地 Ollama 的已验收范围与限制见项目根 `STATE.md`。
+配置只在运行时读取。项目根目录的 `.env` 与进程环境变量均可使用，**环境变量优先**。可复制 `.env.example` 为 `.env` 后填写；不要把真实 `.env` 或 API Key 写入日志、测试和交付文件。获取真实 Key、逐项填写、环境变量切换及 Ollama 安装的完整步骤见 [SETUP.md](SETUP.md)。OpenAI 兼容接口仍需用户提供 Key 后验证；本地 Ollama 的已验收范围与限制见[公开验证文档](../docs/VALIDATION.md)。
 
 PowerShell 也可以临时设置环境变量，例如：
 
@@ -225,10 +225,10 @@ AGENT_API_KEY=
 
 `AGENT_TOP_K` 范围为 1–10。当前向量模型是官方 239MB 的量化感知训练模型，训练数据覆盖 100+ 语言；程序自动加入它要求的检索查询/文档提示前缀。根目录 `start_ollama_cpu.ps1` 固定使用本机回环地址、CPU 库、模型目录 `<OLLAMA_MODELS_DIR>`，禁用云模型并限制只加载一个模型；可用 `-OllamaExe`、`-ModelsDir`、`-DataDir`、`-Listen` 覆盖路径，`-NumParallel` 默认为 1。脚本不会下载模型，也不会修改系统级环境变量。模型首次准备方法见 `SETUP.md` 第 6 节。
 
-代码只连接配置的本机 HTTP 服务，不接入云端 API。localhost 配置本身不等于操作系统级断网验收；是否实际阻断外网及真实语料统计以项目根 `STATE.md` 为准。
+代码只连接配置的本机 HTTP 服务，不接入云端 API。localhost 配置本身不等于操作系统级断网验收；是否实际阻断外网及验证范围以[公开验证文档](../docs/VALIDATION.md)为准。
 
 ### 本机验收基线（2026-11-09）
 
 当前机器已完成 391 个来源、4,628 个块和 4,628 条 768 维向量的全量构建，0 待嵌入。变量绑定问题实测为 `hybrid`，Top 4 均有词法/向量分数；真实 Qwen 一次生成有效引用并附来源，量子引力自然语言问题实测为 `refusal / not_run / sources:[]`。
 
-未变文件重索引实测 `updated_files=0`、`embedded_now=0`，向量 API 未调用且向量哈希不变；真实 CLI 再索引耗时 0.393 秒。无生成模型、向量服务不可用和模型不匹配均有明确原文/关键词降级。最终完整回归为 **144 passed in 13.31s**，其中网页服务 14 项、资料导入 5 项测试。真实 Edge 已验证 RAG 回答、引用、全文精确高亮，以及资料管理的多文件上传、DOCX 转换、无效格式隔离、自动索引、检索、全文阅读、拖放、重复复用、备份式移除、深浅色与手机布局，JavaScript 异常为 0；4,628 个真实索引块也均已逐一回查定位。网页验收证据为 `<PRIVATE_DATA_DIR>\web_ui_validation.json`、`browser_ui_validation.json`、`browser_reader_validation.json` 和 `browser_library_validation.json`。详细统计、截图路径及未验证边界见项目根 `STATE.md`；操作系统断网和原 11434 故障修复不在已完成声明内。
+未变文件重索引实测 `updated_files=0`、`embedded_now=0`，向量 API 未调用且向量哈希不变；真实 CLI 再索引耗时 0.393 秒。无生成模型、向量服务不可用和模型不匹配均有明确原文/关键词降级。最终完整回归为 **144 passed in 13.31s**，其中网页服务 14 项、资料导入 5 项测试。真实 Edge 已验证 RAG 回答、引用、全文精确高亮，以及资料管理的多文件上传、DOCX 转换、无效格式隔离、自动索引、检索、全文阅读、拖放、重复复用、备份式移除、深浅色与手机布局，JavaScript 异常为 0；4,628 个真实索引块也均已逐一回查定位。网页验收证据为 `<PRIVATE_DATA_DIR>\web_ui_validation.json`、`browser_ui_validation.json`、`browser_reader_validation.json` 和 `browser_library_validation.json`。验证范围和未验证边界见[公开验证文档](../docs/VALIDATION.md)；操作系统断网和原 11434 故障修复不在已完成声明内。

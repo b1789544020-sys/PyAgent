@@ -21,3 +21,16 @@ STATE.md
 removed_documents/
 dist/
 build/
+
+# Local-only configuration backups and demo production files
+.pyagent-local/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.webm
+*.wav
+*.mp3
+review/
+recordings/
+private/

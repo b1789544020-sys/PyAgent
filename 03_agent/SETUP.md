@@ -2,7 +2,7 @@
 
 本指南从项目根目录 `<PROJECT_ROOT>` 操作。只需要 Python 和标准库；配置在每次启动时读取，不需要修改源码。
 
-> OpenAI 兼容接口仍需用户提供真实 Key 后验证。本地 `qwen2.5:3b-cpu` 引用问答、`embeddinggemma:300m-qat-q4_0` 全量向量、混合检索、资料外拒答和增量复用已做真实本机验收；自动化测试中的 MockLLM/模拟 HTTP 不冒充这些真实结果。完整统计、证据和未验证边界见项目根 `STATE.md`。
+> OpenAI 兼容接口仍需用户提供真实 Key 后验证。本地 `qwen2.5:3b-cpu` 引用问答、`embeddinggemma:300m-qat-q4_0` 全量向量、混合检索、资料外拒答和增量复用已做真实本机验收；自动化测试中的 MockLLM/模拟 HTTP 不冒充这些真实结果。完整统计、证据和未验证边界见[公开验证文档](../docs/VALIDATION.md)。
 
 ## 1. 获取并保存真实 Key
 
@@ -234,7 +234,7 @@ python 03_agent/main.py ask "docs_ask Python 中变量赋值如何绑定名称 -
 - **向量失败但关键词可用**：索引按批提交，查看 `embedding_pending` 和 `warning`；修复模型服务后重跑 `docs_index` 即可续建。
 - **模型找不到**：在设置了同一 `OLLAMA_HOST`、`OLLAMA_MODELS` 的终端运行 `ollama list`，模型名必须与 `.env` 完全一致。
 - **看实时进度**：`docs_index` 的 stderr 每批报告 `已完成/本次待处理`；中断后已提交批次不会丢失。
-- **尚未证明的事项**：localhost 与 `OLLAMA_NO_CLOUD=1` 不等于操作系统级断网测试；真实全量统计和是否做过断网验收见 `STATE.md`。
+- **尚未证明的事项**：localhost 与 `OLLAMA_NO_CLOUD=1` 不等于操作系统级断网测试；真实全量统计和是否做过断网验收见[公开验证文档](../docs/VALIDATION.md)。
 
 ### 6.4 当前机器的最终验收基线（2026-11-09）
 
